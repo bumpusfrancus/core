@@ -787,6 +787,7 @@ export default class MaterialTable extends React.Component {
                 }}
                 page={this.isRemoteData() ? this.state.query.page : currentPage}
                 onChangePage={this.onChangePage}
+                onPageChange={this.onChangePage}
                 onChangeRowsPerPage={this.onChangeRowsPerPage}
                 ActionsComponent={(subProps) =>
                   props.options.paginationType === 'normal' ? (
