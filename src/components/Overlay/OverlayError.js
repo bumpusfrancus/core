@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { fade } from '@material-ui/core';
+import { fade, alpha } from '@material-ui/core/styles/colorManipulator'; // TODO: v5 migration: remove fade for good
 
 function OverlayError(props) {
   return (
@@ -10,7 +10,10 @@ function OverlayError(props) {
         display: 'table',
         width: '100%',
         height: '100%',
-        backgroundColor: fade(props.theme.palette.background.paper, 0.7)
+        backgroundColor: (alpha ?? fade)(
+          props.theme.palette.background.paper,
+          0.7
+        )
       }}
     >
       <div
