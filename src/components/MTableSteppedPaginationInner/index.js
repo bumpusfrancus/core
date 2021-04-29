@@ -9,24 +9,25 @@ import React from 'react';
 /* eslint-enable no-unused-vars */
 
 function MTablePaginationInner(props) {
+  const onPageChange = props.onPageChange ?? props.onChangePage;
   const handleFirstPageButtonClick = (event) => {
-    props.onChangePage(event, 0);
+    onPageChange(event, 0);
   };
 
   const handleBackButtonClick = (event) => {
-    props.onChangePage(event, props.page - 1);
+    onPageChange(event, props.page - 1);
   };
 
   const handleNextButtonClick = (event) => {
-    props.onChangePage(event, props.page + 1);
+    onPageChange(event, props.page + 1);
   };
 
   const handleNumberButtonClick = (number) => (event) => {
-    props.onChangePage(event, number);
+    onPageChange(event, number);
   };
 
   const handleLastPageButtonClick = (event) => {
-    props.onChangePage(
+    onPageChange(
       event,
       Math.max(0, Math.ceil(props.count / props.rowsPerPage) - 1)
     );
@@ -154,6 +155,7 @@ const actionsStyles = (theme) => ({
 
 MTablePaginationInner.propTypes = {
   onChangePage: PropTypes.func,
+  onPageChange: PropTypes.func,
   page: PropTypes.number,
   count: PropTypes.number,
   rowsPerPage: PropTypes.number,
