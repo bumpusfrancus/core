@@ -4,6 +4,8 @@ import { defaultProps } from './defaults';
 import { propTypes } from './prop-types';
 import MaterialTable from './material-table';
 import { withStyles } from '@material-ui/core';
+import getStore from './redux/store';
+import { Provider } from 'react-redux';
 
 MaterialTable.defaultProps = defaultProps;
 MaterialTable.propTypes = propTypes;
@@ -24,9 +26,18 @@ const styles = (theme) => ({
   }
 });
 
-export default withStyles(styles, { withTheme: true })((props) => (
-  <MaterialTable {...props} ref={props.tableRef} />
-));
+export const MTContext = React.createContext();
+
+export default withStyles(styles, { withTheme: true })((props) => {
+  const store = React.useMemo(getStore, []);
+  return (
+    <Provider store={store}>
+      <MTContext.Provider value={props}>
+        <MaterialTable {...props} ref={props.tableRef} />
+      </MTContext.Provider>
+    </Provider>
+  );
+});
 
 export {
   MTableAction,

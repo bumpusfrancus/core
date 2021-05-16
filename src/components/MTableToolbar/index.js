@@ -11,17 +11,23 @@ import { lighten, withStyles } from '@material-ui/core';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React from 'react';
+import { useToolbar } from '../../redux/toolbarSlice';
+import { useMTContext } from '../../redux/useMTContext';
+import { useRowData } from '../../redux/dataSlice';
 
 export function MTableToolbar(props) {
+  const { onSearchChange: onSearchChangeCallback } = useMTContext();
+  const { searchText, setSearchText, clearSearchText } = useToolbar();
   const [state, setState] = React.useState(() => ({
     columnsButtonAnchorEl: null,
-    exportButtonAnchorEl: null,
-    searchText: props.searchText
+    exportButtonAnchorEl: null
   }));
 
+  console.log(useRowData());
+
   const onSearchChange = (searchText) => {
-    props.dataManager.changeSearchText(searchText);
-    setState({ ...state, searchText }, props.onSearchChanged(searchText));
+    setSearchText(searchText);
+    onSearchChangeCallback && onSearchChangeCallback(searchText);
   };
 
   const getTableData = () => {
@@ -71,7 +77,7 @@ export function MTableToolbar(props) {
               ? null
               : props.classes.searchField
           }
-          value={state.searchText}
+          value={searchText}
           onChange={(event) => onSearchChange(event.target.value)}
           placeholder={localization.searchPlaceholder}
           variant={props.searchFieldVariant}
@@ -86,8 +92,8 @@ export function MTableToolbar(props) {
             endAdornment: (
               <InputAdornment position="end">
                 <IconButton
-                  disabled={!state.searchText}
-                  onClick={() => onSearchChange('')}
+                  disabled={!searchText}
+                  onClick={clearSearchText}
                   aria-label={localization.clearSearchAriaLabel}
                 >
                   <props.icons.ResetSearch
@@ -219,7 +225,10 @@ export function MTableToolbar(props) {
                     key={`${menuitem.label}${index}`}
                     onClick={() => {
                       menuitem.exportFunc(cols, datas);
-                      setState({ exportButtonAnchorEl: null });
+                      setState((prev) => ({
+                        ...prev,
+                        exportButtonAnchorEl: null
+                      }));
                     }}
                   >
                     {menuitem.label}
@@ -363,6 +372,7 @@ MTableToolbar.defaultProps = {
 MTableToolbar.propTypes = {
   actions: PropTypes.array,
   columns: PropTypes.array,
+  forwardedRef: PropTypes.any,
   columnsButton: PropTypes.bool,
   components: PropTypes.object.isRequired,
   getFieldValue: PropTypes.func.isRequired,
